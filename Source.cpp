@@ -32,13 +32,13 @@ public:
 			Clear(olc::BLACK);
 			timer++;
 			for (int i = 0; i < pars.size(); i++) {
-				olc::Sprite* name;
+				//Grabbing entire window variable into a sprite
+				olc::Sprite* name = GetDrawTarget();
 				const olc::Pixel b = { 0, 0, 0 };
+				//The basic sand sim logic
 				switch (pars[i].type) {
 				case 1:
-					//Grabbing entire window variable into a sprite
-					name = GetDrawTarget();
-					//The basic sand sim logic
+					//Sand
 					if ((name->GetPixel(pars[i].x, pars[i].y+1)).operator==(b)) {
 						pars[i].y++;
 					}
@@ -52,6 +52,28 @@ public:
 					}
 					break;
 				case 2:
+					//Water
+					if ((name->GetPixel(pars[i].x, pars[i].y + 1)).operator==(b)) {
+						pars[i].y++;
+					}
+					else if ((name->GetPixel(pars[i].x - 1, pars[i].y + 1)).operator==(b)) {
+						pars[i].x--;
+						pars[i].y++;
+					}
+					else if ((name->GetPixel(pars[i].x + 1, pars[i].y + 1)).operator==(b)) {
+						pars[i].x++;
+						pars[i].y++;
+					}
+					else if ((name->GetPixel(pars[i].x + 1, pars[i].y)).operator==(b)) {
+						pars[i].x++;
+					}
+					else if ((name->GetPixel(pars[i].x - 1, pars[i].y)).operator==(b)) {
+						pars[i].x--;
+					}
+					break;
+				case 3:
+					//Wood
+
 
 					break;
 
@@ -62,7 +84,7 @@ public:
 			}
 			//Code for when I add more particles
 			if (GetKey(olc::R).bHeld && timer % 10 == 0) {
-				if (current == 2) {
+				if (current == 3) {
 					current = 1;
 				}
 				else {
@@ -77,10 +99,24 @@ public:
 				Particle p;
 				p.x = mx;
 				p.y = my;
-				p.type = 1;
-				p.r = 255;
-				p.g = 255;
-				p.b = 0;
+				p.type = current;
+				switch (current) {
+				case 1:
+					p.r = 255;
+					p.g = 255;
+					p.b = 0;
+					break;
+				case 2:
+					p.r = 0;
+					p.g = 128;
+					p.b = 255;
+					break;
+				case 3:
+					p.r = 73;
+					p.g = 20;
+					p.b = 20;
+					break;
+				}
 				pars.push_back(p);
 			}
 			std::string cur = "Current type: " + std::to_string(current);
